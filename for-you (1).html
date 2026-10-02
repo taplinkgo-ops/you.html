@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For you 🌹</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg1: #fff1f4; --bg2: #f9d5e0; --ink: #4a1f35; --soft: #8a4a66;
+    --card: rgba(255,255,255,.7); --accent: #c2185b; --petal: #e8336a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg1: #2a1030; --bg2: #4a1a3f; --ink: #fff0f2; --soft: #f4b8cb;
+      --card: rgba(255,255,255,.08); --accent: #ff6f9c; --petal: #f06292;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg1: #2a1030; --bg2: #4a1a3f; --ink: #fff0f2; --soft: #f4b8cb;
+    --card: rgba(255,255,255,.08); --accent: #ff6f9c; --petal: #f06292;
+  }
+  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: inherit; }
+  body {
+    margin: 0; min-height: 100%; color: var(--ink);
+    background: linear-gradient(170deg, var(--bg1), var(--bg2)) fixed;
+    font-family: "Nunito", system-ui, sans-serif; line-height: 1.6;
+    overflow-x: hidden;
+  }
+  main { max-width: 520px; margin: 0 auto; padding: 24px 20px 56px; text-align: center; position: relative; z-index: 1; }
+
+  /* Rose */
+  .rose { width: min(230px, 62vw); margin: 8px auto 0; display: block; overflow: visible; }
+  .bloom { transform-origin: 100px 100px; animation: bloom 2.6s cubic-bezier(.2,.8,.2,1) both; }
+  .stem { stroke-dasharray: 160; stroke-dashoffset: 160; animation: grow 1.4s ease-out .2s forwards; }
+  .leaf { transform-origin: 100px 215px; animation: pop .8s ease-out 1.2s both; }
+  @keyframes bloom { from { transform: scale(.05) rotate(-60deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+  @keyframes grow { to { stroke-dashoffset: 0; } }
+  @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+  h1 { font-family: "Caveat", cursive; font-weight: 700; font-size: clamp(2.4rem, 9vw, 3.4rem); margin: 8px 0 4px; line-height: 1.1; }
+  .lead { font-size: 1.05rem; color: var(--soft); margin: 0 auto 22px; max-width: 34ch; }
+
+  .card { background: var(--card); border: 1px solid rgba(194,24,91,.18); border-radius: 22px; padding: 22px 20px; margin: 16px 0; backdrop-filter: blur(6px); }
+  #msg { font-family: "Caveat", cursive; font-size: clamp(1.6rem, 6vw, 2rem); min-height: 5.5em; display: flex; align-items: center; justify-content: center; margin: 0 0 14px; line-height: 1.25; transition: opacity .35s; }
+  #msg.out { opacity: 0; }
+  #joke { font-family: "Caveat", cursive; font-size: clamp(1.5rem, 5.5vw, 1.9rem); min-height: 4.5em; display: flex; align-items: center; justify-content: center; margin: 0 0 14px; line-height: 1.25; transition: opacity .3s; }
+  #joke.out { opacity: 0; }
+
+  button {
+    font: inherit; font-weight: 600; cursor: pointer; border: 0; border-radius: 999px;
+    padding: 12px 26px; background: var(--accent); color: #fff; transition: transform .15s;
+  }
+  button:hover { transform: translateY(-2px); }
+  button:active { transform: scale(.97); }
+  button.ghost { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+  /* Breathing */
+  #breath { display: none; }
+  #breath.on { display: block; }
+  .orb { width: 120px; height: 120px; border-radius: 50%; margin: 10px auto 12px;
+    background: radial-gradient(circle at 35% 30%, #ffc1d6, var(--petal)); animation: breathe 8s ease-in-out infinite; }
+  @keyframes breathe { 0%,100% { transform: scale(.6); } 50% { transform: scale(1.05); } }
+  #breathText { font-family: "Caveat", cursive; font-size: 1.8rem; margin: 0; }
+
+  .reasons { list-style: none; padding: 0; margin: 0; text-align: left; }
+  .reasons li { padding: 8px 0 8px 30px; position: relative; }
+  .reasons li::before { content: "🌸"; position: absolute; left: 0; }
+  h2 { font-family: "Caveat", cursive; font-size: 2rem; margin: 0 0 8px; }
+  .note { color: var(--soft); font-size: .98rem; }
+  .sign { font-family: "Caveat", cursive; font-size: 1.9rem; margin-top: 18px; }
+
+  /* Falling petals */
+  .petal { position: fixed; top: -30px; width: 14px; height: 18px; background: var(--petal); opacity: .75;
+    border-radius: 150% 0 150% 0; pointer-events: none; z-index: 0; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translate(var(--dx), 110vh) rotate(var(--rot)); opacity: .2; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bloom, .stem, .leaf, .orb { animation: none; stroke-dashoffset: 0; }
+    .petal { display: none; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <svg class="rose" viewBox="0 0 200 300" role="img" aria-label="A blooming red rose">
+    <path class="stem" d="M100 150 C96 200 104 250 100 292" fill="none" stroke="#2e7d32" stroke-width="7" stroke-linecap="round"/>
+    <path class="leaf" d="M100 225 C70 205 55 215 52 232 C75 242 92 238 100 225Z" fill="#43a047"/>
+    <path class="leaf" d="M100 250 C130 232 148 240 150 258 C126 266 108 262 100 250Z" fill="#388e3c"/>
+    <g class="bloom">
+      <circle cx="100" cy="100" r="60" fill="#a31245"/>
+      <g fill="#d81b60" stroke="#8e0e30" stroke-width="1.5">
+        <ellipse cx="100" cy="58" rx="27" ry="36"/>
+        <ellipse cx="100" cy="58" rx="27" ry="36" transform="rotate(72 100 100)"/>
+        <ellipse cx="100" cy="58" rx="27" ry="36" transform="rotate(144 100 100)"/>
+        <ellipse cx="100" cy="58" rx="27" ry="36" transform="rotate(216 100 100)"/>
+        <ellipse cx="100" cy="58" rx="27" ry="36" transform="rotate(288 100 100)"/>
+      </g>
+      <g fill="#ec407a" stroke="#ad1457" stroke-width="1.2">
+        <ellipse cx="100" cy="72" rx="20" ry="26" transform="rotate(36 100 100)"/>
+        <ellipse cx="100" cy="72" rx="20" ry="26" transform="rotate(108 100 100)"/>
+        <ellipse cx="100" cy="72" rx="20" ry="26" transform="rotate(180 100 100)"/>
+        <ellipse cx="100" cy="72" rx="20" ry="26" transform="rotate(252 100 100)"/>
+        <ellipse cx="100" cy="72" rx="20" ry="26" transform="rotate(324 100 100)"/>
+      </g>
+      <circle cx="100" cy="100" r="17" fill="#f48fb1" stroke="#c2185b" stroke-width="1.5"/>
+      <path d="M100 100 m-8 0 a8 8 0 1 1 8 8" fill="none" stroke="#c2185b" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </svg>
+
+  <h1 id="title">For you</h1>
+  <p class="lead" id="lead">I made this because I care about you, and I wanted you to have something soft today.</p>
+
+  <section class="card">
+    <p id="msg" aria-live="polite">Tap the button. There's a little note waiting for you.</p>
+    <button id="next">Read a note</button>
+  </section>
+
+  <section class="card">
+    <h2>Need a laugh?</h2>
+    <p id="joke" aria-live="polite">Warning: these jokes are terrible on purpose. 😄</p>
+    <button id="jokeBtn">Tell me a joke</button>
+  </section>
+
+  <section class="card">
+    <h2>One slow breath?</h2>
+    <p class="note">No pressure. Just follow the circle for a minute.</p>
+    <div id="breath"><div class="orb"></div><p id="breathText">Breathe in…</p></div>
+    <button class="ghost" id="breathBtn">Start breathing</button>
+  </section>
+
+  <section class="card">
+    <h2>Things I love about you</h2>
+    <ul class="reasons">
+      <li>You show up for people, even when you're tired.</li>
+      <li>Your laugh makes any room feel lighter.</li>
+      <li>You're braver than you give yourself credit for.</li>
+      <li>I'm just really glad you're in my life.</li>
+    </ul>
+  </section>
+
+  <p class="note">A bad stretch isn't a verdict on who you are. You don't have to be okay today, and you don't have to carry this alone. If it ever feels too heavy, please talk to someone you trust. I'm happy to be that person, and a counselor or doctor can help too.</p>
+  <p class="sign" id="sign">Always on your side 🌹</p>
+</main>
+
+<script>
+  // ✏️ Personalize here (or share the link with ?to=Her Name&from=Your Name)
+  const params = new URLSearchParams(location.search);
+  const TO = params.get("to") || "";
+  const FROM = params.get("from") || "";
+
+  if (TO) document.getElementById("title").textContent = "For you, " + TO;
+  if (FROM) document.getElementById("sign").textContent = "Always on your side, " + FROM + " 🌹";
+
+  const messages = [
+    "You don't have to be okay today. Just being here is enough.",
+    "Hard days are real, and they do pass. I'll wait with you.",
+    "You are loved more than your sad thoughts will admit.",
+    "Small steps count. Water, a snack, some fresh air: that's a win.",
+    "You're not a burden. You're my person.",
+    "Rest isn't giving up. It's how you get strong again.",
+    "However slow today feels, you're still moving forward.",
+    "If you want to talk, I'll listen. If you don't, I'll just sit with you.",
+    "The world is better with you in it. I mean that.",
+    "You've survived every hard day so far. That's a 100% record.",
+    "Even the moon takes days off. You're allowed to hide under a blanket too. 🌙",
+    "Official notice: snacks in bed have been approved as a valid coping strategy. 🍫"
+  ];
+
+  const jokes = [
+    "Why did the scarecrow win an award? He was outstanding in his field. 🌾",
+    "I'm on a seafood diet. I see food and I eat it. 🍟",
+    "My bed and I are in a very serious relationship. We're basically inseparable. 🛏️",
+    "I tried to be normal once. Worst two minutes of my life. 😅",
+    "Breaking news: local legend is doing their best, and it's honestly impressive. 📰",
+    "Why can't you trust stairs? They're always up to something. 🪜",
+    "I told my rose a joke. It was so bad it wilted. Then it bloomed out of spite. 🌹",
+    "I'd tell you a chemistry joke, but I know I wouldn't get a reaction. 🧪"
+  ];
+
+  const joke = document.getElementById("joke");
+  let lastJoke = -1;
+  document.getElementById("jokeBtn").addEventListener("click", () => {
+    let j;
+    do { j = Math.floor(Math.random() * jokes.length); } while (j === lastJoke);
+    lastJoke = j;
+    joke.classList.add("out");
+    setTimeout(() => { joke.textContent = jokes[j]; joke.classList.remove("out"); }, 300);
+    burst();
+  });
+
+  const msg = document.getElementById("msg");
+  let last = -1;
+  document.getElementById("next").addEventListener("click", () => {
+    let i;
+    do { i = Math.floor(Math.random() * messages.length); } while (i === last);
+    last = i;
+    msg.classList.add("out");
+    setTimeout(() => { msg.textContent = messages[i]; msg.classList.remove("out"); }, 350);
+    burst();
+  });
+
+  // Breathing guide: 4s in, 4s out
+  const breath = document.getElementById("breath");
+  const breathText = document.getElementById("breathText");
+  const breathBtn = document.getElementById("breathBtn");
+  let timer = null;
+  breathBtn.addEventListener("click", () => {
+    if (timer) {
+      clearInterval(timer); timer = null;
+      breath.classList.remove("on"); breathBtn.textContent = "Start breathing";
+      return;
+    }
+    breath.classList.add("on"); breathBtn.textContent = "Stop";
+    let inhale = true; breathText.textContent = "Breathe in…";
+    timer = setInterval(() => {
+      inhale = !inhale;
+      breathText.textContent = inhale ? "Breathe in…" : "Breathe out…";
+    }, 4000);
+  });
+
+  // Falling petals
+  function petal() {
+    const p = document.createElement("div");
+    p.className = "petal";
+    const size = 10 + Math.random() * 14;
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.width = size + "px";
+    p.style.height = size * 1.3 + "px";
+    p.style.setProperty("--dx", (Math.random() * 160 - 80) + "px");
+    p.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
+    p.style.animationDuration = 6 + Math.random() * 6 + "s";
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 12500);
+  }
+  function burst() { for (let i = 0; i < 14; i++) setTimeout(petal, i * 80); }
+
+  setInterval(petal, 700);
+  burst();
+</script>
+</body>
+</html>
